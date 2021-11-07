@@ -5,9 +5,9 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
-ROOT_DIR = os.path.abspath("./")
+ROOT_DIR = os.path.abspath("./", "part1")
 sys.path.append(ROOT_DIR)
-print(ROOT_DIR)
+print("Root directory:", ROOT_DIR)
 
 """
 
@@ -15,12 +15,14 @@ READ AN IMAGE
 
 """
 
-fig = plt.figure(figsize=(8, 8))
+fig = plt.figure(figsize=(16, 16))
 
 IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "images", "dithering", "1.png")
+#IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "SAM_0384.JPG")
 image = cv2.imread(IMAGE_DIR_PATH)
+print("Image size ", image.shape)
 # print(image)
-fig.add_subplot(2, 2, 1)
+fig.add_subplot(3, 2, 1)
 plt.imshow(image)
 
 
@@ -31,13 +33,13 @@ QUANTIZE THE IMAGE
 """
 
 from matplotlib import pyplot as plt
-ratio=128  # Set quantization ratio
+ratio=8 # Set quantization ratio
 for i in range(image.shape[0]):
     for j in range(image.shape[1]):
         for k in range(image.shape[2]):
             image[i][j][k]=int(image[i][j][k]/ratio)*ratio
 print("Quantized image:")
-fig.add_subplot(2, 2, 2)
+fig.add_subplot(3, 2, 2)
 plt.imshow(image)
 
 """
@@ -76,6 +78,7 @@ def fs_dither(img, nc):
         for ic in range(img.shape[1]):
             # NB need to copy here for RGB arrays otherwise err will be (0,0,0)!
             old_val = arr[ir, ic].copy()
+            #print(old_val)
             new_val = get_new_val(old_val, nc)
             arr[ir, ic] = new_val
             err = old_val - new_val
@@ -101,11 +104,14 @@ def palette_reduce(img, nc):
     carr = np.array(arr/np.max(arr) * 255, dtype=np.uint8)
     return Image.fromarray(carr)
 
-
-for nc in (2,3,4,5,6):
+i=3 
+for nc in (2,4,6,8):
     print('nc =', nc)
     dim = fs_dither(image, nc)
-    dim.save('dimg-{}.jpg'.format(nc))
-    rim = palette_reduce(image, nc)
-    rim.save('rimg-{}.jpg'.format(nc))
+    fig.add_subplot(3,2,i)
+    plt.imshow(dim)
+    i+=1
+    #dim.save('out_images/dimg-{}.jpg'.format(nc))
+    #rim = palette_reduce(image, nc)
+    #rim.save('out_images/rimg-{}.jpg'.format(nc))
 plt.show()
