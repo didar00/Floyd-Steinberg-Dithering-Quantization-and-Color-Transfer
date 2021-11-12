@@ -31,16 +31,6 @@ def colorTransfer(src, tgt):
     #print(np.count_nonzero(np.isnan(src)))
 
 
-
-    fig = plt.figure(figsize=(16, 16))
-    fig.add_subplot(2, 5, 1)
-    plt.imshow(src)
-    plt.title("source image")
-    fig.add_subplot(2, 5, 2)
-    plt.imshow(tgt)
-    plt.title("target image")
-
-
     """
 
     STEP 1
@@ -147,7 +137,6 @@ def colorTransfer(src, tgt):
             #tgt_lab[i,j] = np.where(tgt_lab[i,j] > 255, 255, tgt_lab[i,j])
 
     
-    fig.add_subplot(2, 5, 5)
     plt.imshow(src_lab)
     plt.title("step 3")
 
