@@ -30,6 +30,16 @@ def colorTransfer(src, tgt):
     
     #print(np.count_nonzero(np.isnan(src)))
 
+
+    fig = plt.figure(figsize=(16, 16))
+    fig.add_subplot(2, 5, 1)
+    plt.imshow(src)
+    plt.title("source image")
+    fig.add_subplot(2, 5, 2)
+    plt.imshow(tgt)
+    plt.title("target image")
+
+
     """
 
     STEP 1
@@ -57,8 +67,7 @@ def colorTransfer(src, tgt):
 
     plt.imshow(_scale_array(src_lms, clip=False).astype(np.uint8))
     plt.title("step 1")
-    plt.show()
-    plt.clf()
+   
     print(src_lms)
     #print(np.count_nonzero(np.isnan(src_lms)))
     print("******************************************",
@@ -93,8 +102,6 @@ def colorTransfer(src, tgt):
 
     plt.imshow(_min_max_scale(src_log_lms, new_range=(0,255)).astype(np.uint8))
     plt.title("step 2")
-    plt.show()
-    plt.clf()
 
     print(src_log_lms)
     print("******************************************",
@@ -139,10 +146,11 @@ def colorTransfer(src, tgt):
             #tgt_lab[i,j] = np.where(tgt_lab[i,j] > 255, 255, tgt_lab[i,j])
 
     
+    fig.add_subplot(2, 5, 5)
     plt.imshow(src_lab)
     plt.title("step 3")
-    plt.show()
-    plt.clf()
+
+
 
     plt.imshow(_min_max_scale(src_lab[:,:,0], new_range=(0,255)).astype(np.uint8))
     plt.title("step 3")
@@ -203,10 +211,9 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = src_lab[:,:,1] - mean_a_src
     src_lab[:,:,2] = src_lab[:,:,2] - mean_b_src
 
+    fig.add_subplot(2, 5, 6)
     plt.imshow(src_lab)
     plt.title("step 5")
-    plt.show()
-    plt.clf()
 
     """
 
@@ -218,10 +225,9 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = (var_a_tgt/var_a_src)*src_lab[:,:,1]
     src_lab[:,:,2] = (var_b_tgt/var_b_src)*src_lab[:,:,2]
 
+    fig.add_subplot(2, 5, 7)
     plt.imshow(src_lab)
     plt.title("step 6")
-    plt.show()
-    plt.clf()
 
 
     """
@@ -234,11 +240,9 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = src_lab[:,:,1] + mean_a_tgt
     src_lab[:,:,2] = src_lab[:,:,2] + mean_b_tgt
     
-
+    fig.add_subplot(2, 5, 8)
     plt.imshow(src_lab)
     plt.title("step 7")
-    plt.show()
-    plt.clf()
 
     print(src_lab)
     print("******************************************",
@@ -284,8 +288,6 @@ def colorTransfer(src, tgt):
 
     plt.imshow(_min_max_scale(src_lab, new_range=(0,255)).astype(np.uint8))
     plt.title("step 8")
-    plt.show()
-    plt.clf()
 
     print(src_lab)
     print("******************************************",
@@ -356,7 +358,7 @@ def colorTransfer(src, tgt):
         "********************************************")
     #result_img[-10:-1,:] = 1
 
-
+    plt.clf()
     return result_img
 
 
