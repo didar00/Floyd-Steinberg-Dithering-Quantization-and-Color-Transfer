@@ -31,15 +31,6 @@ def colorTransfer(src, tgt):
     #print(np.count_nonzero(np.isnan(src)))
 
 
-    fig = plt.figure(figsize=(16, 16))
-    fig.add_subplot(2, 5, 1)
-    plt.imshow(src)
-    plt.title("source image")
-    fig.add_subplot(2, 5, 2)
-    plt.imshow(tgt)
-    plt.title("target image")
-
-
     """
 
     STEP 1
@@ -146,7 +137,6 @@ def colorTransfer(src, tgt):
             #tgt_lab[i,j] = np.where(tgt_lab[i,j] > 255, 255, tgt_lab[i,j])
 
     
-    fig.add_subplot(2, 5, 5)
     plt.imshow(src_lab)
     plt.title("step 3")
 
@@ -211,7 +201,7 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = src_lab[:,:,1] - mean_a_src
     src_lab[:,:,2] = src_lab[:,:,2] - mean_b_src
 
-    fig.add_subplot(2, 5, 6)
+    
     plt.imshow(src_lab)
     plt.title("step 5")
 
@@ -225,7 +215,7 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = (var_a_tgt/var_a_src)*src_lab[:,:,1]
     src_lab[:,:,2] = (var_b_tgt/var_b_src)*src_lab[:,:,2]
 
-    fig.add_subplot(2, 5, 7)
+    
     plt.imshow(src_lab)
     plt.title("step 6")
 
@@ -240,7 +230,7 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = src_lab[:,:,1] + mean_a_tgt
     src_lab[:,:,2] = src_lab[:,:,2] + mean_b_tgt
     
-    fig.add_subplot(2, 5, 8)
+    
     plt.imshow(src_lab)
     plt.title("step 7")
 
