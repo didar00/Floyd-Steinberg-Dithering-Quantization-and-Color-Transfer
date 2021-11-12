@@ -56,7 +56,8 @@ def transfer(src, tgt):
 
 #transfer("ocean_day.jpg", "ocean_sunset.jpg")
 #transfer("autumn.jpg", "storm.jpg")
-transfer("ocean_day.jpg", "fallingwater.jpg")
+#transfer("ocean_day.jpg", "fallingwater.jpg")
+transfer("scotland_house.jpg", "scotland_plain.jpg")
 
 
 

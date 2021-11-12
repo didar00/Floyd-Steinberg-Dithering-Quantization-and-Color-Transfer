@@ -10,20 +10,20 @@ from matplotlib import pyplot as plt
 
 
 def colorTransfer(src, tgt):
-    plt.imshow(src)
-    plt.title("source image")
-    plt.show()
-    plt.clf()
-    print(src)
-    plt.imshow(tgt)
-    plt.title("target image")
-    plt.show()
-    plt.clf()
-    print(tgt)
     src_lab = np.copy(src)
     tgt_lab = np.copy(tgt)
     
     print(np.count_nonzero(np.isnan(src)))
+
+
+    fig = plt.figure(figsize=(16, 16))
+    fig.add_subplot(2, 5, 1)
+    plt.imshow(src)
+    plt.title("source image")
+    fig.add_subplot(2, 5, 2)
+    plt.imshow(tgt)
+    plt.title("target image")
+
 
     """
 
@@ -51,10 +51,11 @@ def colorTransfer(src, tgt):
             #tgt_lms[i,j] = np.where(tgt_lms[i,j] < 1, 1, tgt_lms[i,j])
             #tgt_lms[i,j] = np.where(tgt_lms[i,j] > 255, 255, tgt_lms[i,j])
 
+
+    fig.add_subplot(2, 5, 3)
     plt.imshow(src_lms)
     plt.title("step 1")
-    plt.show()
-    plt.clf()
+   
     print(src_lms)
     print(np.count_nonzero(np.isnan(src_lms)))
     print("******************************************",
@@ -78,16 +79,16 @@ def colorTransfer(src, tgt):
     #print(src_log_lms)
     src_lms = _min_max_scale(src_lms, new_range=(1,255))
     tgt_lms = _min_max_scale(tgt_lms, new_range=(1,255))
-    src_lms = np.where(src_lms < 1, 1, src_lms)
-    tgt_lms = np.where(tgt_lms < 1, 1, tgt_lms)
     
     src_log_lms = np.log10(src_lms)
     tgt_log_lms = np.log10(tgt_lms)
 
+    src_log_lms = np.where(src_log_lms == 1, 0, src_log_lms)
+    tgt_log_lms = np.where(tgt_log_lms == 1, 0, tgt_log_lms)
+
+    fig.add_subplot(2, 5, 4)
     plt.imshow(src_log_lms)
     plt.title("step 2")
-    plt.show()
-    plt.clf()
 
     print(src_log_lms)
     print("******************************************",
@@ -131,10 +132,11 @@ def colorTransfer(src, tgt):
             #tgt_lab[i,j] = np.where(tgt_lab[i,j] > 255, 255, tgt_lab[i,j])
 
     
+    fig.add_subplot(2, 5, 5)
     plt.imshow(src_lab)
     plt.title("step 3")
-    plt.show()
-    plt.clf()
+
+
 
     print(src_lab)
     print("******************************************",
@@ -180,10 +182,9 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = src_lab[:,:,1] - mean_a_src
     src_lab[:,:,2] = src_lab[:,:,2] - mean_b_src
 
+    fig.add_subplot(2, 5, 6)
     plt.imshow(src_lab)
     plt.title("step 5")
-    plt.show()
-    plt.clf()
 
     """
 
@@ -195,10 +196,9 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = (var_a_tgt/var_a_src)*src_lab[:,:,1]
     src_lab[:,:,2] = (var_b_tgt/var_b_src)*src_lab[:,:,2]
 
+    fig.add_subplot(2, 5, 7)
     plt.imshow(src_lab)
     plt.title("step 6")
-    plt.show()
-    plt.clf()
 
 
     """
@@ -211,11 +211,9 @@ def colorTransfer(src, tgt):
     src_lab[:,:,1] = src_lab[:,:,1] + mean_a_tgt
     src_lab[:,:,2] = src_lab[:,:,2] + mean_b_tgt
     
-
+    fig.add_subplot(2, 5, 8)
     plt.imshow(src_lab)
     plt.title("step 7")
-    plt.show()
-    plt.clf()
 
     print(src_lab)
     print("******************************************",
@@ -259,10 +257,9 @@ def colorTransfer(src, tgt):
         for j in range(src.shape[1]):
             src_lab[i,j] = np.matmul(lab_mat_res, src_lab[i,j])
 
+    fig.add_subplot(2, 5, 9)
     plt.imshow(src_lab)
     plt.title("step 8")
-    plt.show()
-    plt.clf()
 
     print(src_lab)
     print("******************************************",
@@ -280,10 +277,11 @@ def colorTransfer(src, tgt):
     """
 
     src_lab = 10**src_lab
+
+    fig.add_subplot(2, 5, 10)
     plt.imshow(src_lab)
     plt.title("step 9")
-    plt.show()
-    plt.clf()
+
     src_lab = _min_max_scale(src_lab)
 
     print(src_lab)
@@ -321,7 +319,11 @@ def colorTransfer(src, tgt):
     result_img[:,:,1] = np.clip(result_img[:,:,1], 0, 255)
     result_img[:,:,2] = np.clip(result_img[:,:,2], 0, 255) """
 
-    result_img = _min_max_scale(result_img)
+    """ fig.add_subplot(2, 5, 11)
+    plt.imshow(result_img)
+    plt.title("result") """
+
+    result_img = _min_max_scale(result_img, new_range=(0,255))
     print(result_img)
     print("******************************************",
         "********************************************",
@@ -332,7 +334,8 @@ def colorTransfer(src, tgt):
         "********************************************")
     #result_img[-10:-1,:] = 1
 
-
+    plt.show()
+    plt.clf()
     return result_img
 
 
