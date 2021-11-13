@@ -4,10 +4,19 @@ import os
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+from pa1_2 import FloydSteinberg
 
-ROOT_DIR = os.path.abspath("./", "part1")
+"""
+
+GET THE ABSOLUTE PATH OF THE PROJECT
+
+"""
+
+ROOT_DIR = os.path.abspath("./")
 sys.path.append(ROOT_DIR)
 print("Root directory:", ROOT_DIR)
+
+
 
 """
 
@@ -15,15 +24,12 @@ READ AN IMAGE
 
 """
 
-fig = plt.figure(figsize=(16, 16))
 
-IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "images", "dithering", "1.png")
-#IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "SAM_0384.JPG")
+
+#IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "dithering", "2.png")
+IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "dithering", "1.png")
 image = cv2.imread(IMAGE_DIR_PATH)
 print("Image size ", image.shape)
-# print(image)
-fig.add_subplot(3, 2, 1)
-plt.imshow(image)
 
 
 """
@@ -33,14 +39,20 @@ QUANTIZE THE IMAGE
 """
 
 from matplotlib import pyplot as plt
-ratio=8 # Set quantization ratio
-for i in range(image.shape[0]):
-    for j in range(image.shape[1]):
-        for k in range(image.shape[2]):
-            image[i][j][k]=int(image[i][j][k]/ratio)*ratio
-print("Quantized image:")
-fig.add_subplot(3, 2, 2)
-plt.imshow(image)
+
+def quantize(image, q):
+    img = np.copy(image)
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            for k in range(img.shape[2]):
+                img[i][j][k] = round(image[i][j][k]/q)*q
+
+    return img
+
+
+
+
+
 
 """
 
@@ -49,69 +61,39 @@ APPLY DITHERING
 """
 
 
-def get_new_val(old_val, nc):
-    """
-    Get the "closest" colour to old_val in the range [0,1] per channel divided
-    into nc values.
+for q in (2,4,6,8):
+    print('q =', q)
+    fig = plt.figure(figsize=(12,12))
+    quantized = quantize(image, q)
+    dithered_img_1= FloydSteinberg(quantized, 2)
+    dithered_img_2= FloydSteinberg(quantized, 4)
+    dithered_img_3= FloydSteinberg(quantized, 6)
+    dithered_img_4= FloydSteinberg(quantized, 8)
 
-    """
-
-    return np.round(old_val * (nc - 1)) / (nc - 1)
-
-# For RGB images, the following might give better colour-matching.
-#p = np.linspace(0, 1, nc)
-#p = np.array(list(product(p,p,p)))
-#def get_new_val(old_val):
-#    idx = np.argmin(np.sum((old_val[None,:] - p)**2, axis=1))
-#    return p[idx]
-
-def fs_dither(img, nc):
-    """
-    Floyd-Steinberg dither the image img into a palette with nc colours per
-    channel.
-
-    """
-
-    arr = np.array(img, dtype=float) / 255
-
-    for ir in range(img.shape[0]):
-        for ic in range(img.shape[1]):
-            # NB need to copy here for RGB arrays otherwise err will be (0,0,0)!
-            old_val = arr[ir, ic].copy()
-            #print(old_val)
-            new_val = get_new_val(old_val, nc)
-            arr[ir, ic] = new_val
-            err = old_val - new_val
-            # In this simple example, we will just ignore the border pixels.
-            if ic < img.shape[1] - 1:
-                arr[ir, ic+1] += err * 7/16
-            if ir < img.shape[0] - 1:
-                if ic > 0:
-                    arr[ir+1, ic-1] += err * 3/16
-                arr[ir+1, ic] += err * 5/16
-                if ic < img.shape[1] - 1:
-                    arr[ir+1, ic+1] += err / 16
-
-    carr = np.array(arr/np.max(arr, axis=(0,1)) * 255, dtype=np.uint8)
-    return Image.fromarray(carr)
+    fig.add_subplot(2, 4, 2)
+    plt.imshow(image)
+    plt.title("Image")
+    fig.add_subplot(2, 4, 3)
+    plt.imshow(quantized)
+    title = "Quantized image (q=" + str(q) +  ")"
+    plt.title(title)
+    fig.add_subplot(2, 4, 5)
+    plt.imshow(dithered_img_1)
+    plt.title("Dithered image (q=2)")
+    fig.add_subplot(2, 4, 6)
+    plt.imshow(dithered_img_2)
+    plt.title("Dithered image (q=4)")
+    fig.add_subplot(2, 4, 7)
+    plt.imshow(dithered_img_3)
+    plt.title("Dithered image (q=6)")
+    fig.add_subplot(2, 4, 8)
+    plt.title("Dithered image (q=8)")
+    plt.imshow(dithered_img_4)
+    
 
 
-def palette_reduce(img, nc):
-    """Simple palette reduction without dithering."""
-    arr = np.array(img, dtype=float) / 255
-    arr = get_new_val(arr, nc)
+    plt.show()
+    plt.clf()
 
-    carr = np.array(arr/np.max(arr) * 255, dtype=np.uint8)
-    return Image.fromarray(carr)
 
-i=3 
-for nc in (2,4,6,8):
-    print('nc =', nc)
-    dim = fs_dither(image, nc)
-    fig.add_subplot(3,2,i)
-    plt.imshow(dim)
-    i+=1
-    #dim.save('out_images/dimg-{}.jpg'.format(nc))
-    #rim = palette_reduce(image, nc)
-    #rim.save('out_images/rimg-{}.jpg'.format(nc))
-plt.show()
+

@@ -25,12 +25,12 @@ plt.show()
 def read_images(src, tgt):
     src_img = cv2.imread(os.path.join(IMAGE_DIR_PATH, src))
     src_img = cv2.cvtColor(src_img, cv2.COLOR_BGR2RGB)
-    plt.imshow(src_img)
-    plt.show()
+    #plt.imshow(src_img)
+    #plt.show()
     tgt_img = cv2.imread(os.path.join(IMAGE_DIR_PATH, tgt))
     tgt_img = cv2.cvtColor(tgt_img, cv2.COLOR_BGR2RGB)
-    plt.imshow(tgt_img)
-    plt.show()
+    #plt.imshow(tgt_img)
+    #plt.show()
     """ fig = plt.figure(figsize=(8,8))
     fig.add_subplot(1,2,1)
     plt.imshow(src_img)
@@ -48,16 +48,20 @@ def transfer(src, tgt):
     result = colorTransfer(src_img, tgt_img)
     result = result.astype(np.uint8)
     #result /=255
-    plt.imshow(result)
+    """ plt.imshow(result)
     plt.title("result")
-    plt.show()
-    plt.clf()
+    plt.show() """
+    plt.imshow(result)
+    print(result)
+    plt.savefig('out.jpg')
+    #plt.clf()
 
 
 #transfer("ocean_day.jpg", "ocean_sunset.jpg")
-#transfer("autumn.jpg", "storm.jpg")
+#transfer("autumn.jpg", "woods.jpg")
 #transfer("ocean_day.jpg", "fallingwater.jpg")
-transfer("scotland_house.jpg", "scotland_plain.jpg")
+#transfer("scotland_house.jpg", "scotland_plain.jpg")
+transfer("cat-eyes.jpg", "space.jpg")
 
 
 
