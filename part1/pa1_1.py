@@ -29,7 +29,7 @@ READ AN IMAGE
 #IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "dithering", "2.png")
 IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "dithering", "1.png")
 image = cv2.imread(IMAGE_DIR_PATH)
-print("Image size ", image.shape)
+
 
 
 """
@@ -37,6 +37,7 @@ print("Image size ", image.shape)
 QUANTIZE THE IMAGE
 
 """
+
 
 from matplotlib import pyplot as plt
 
@@ -50,50 +51,55 @@ def quantize(image, q):
     return img
 
 
+fig = plt.figure(figsize=(12,12))
+fig.add_subplot(1, 5, 1)
+plt.imshow(image)
+plt.title("Image")
 
+print("Quantization")
 
-
-
-"""
-
-APPLY DITHERING
-
-"""
-
-
+i = 2
 for q in (2,4,6,8):
     print('q =', q)
-    fig = plt.figure(figsize=(12,12))
-    quantized = quantize(image, q)
-    dithered_img_1= FloydSteinberg(quantized, 2)
-    dithered_img_2= FloydSteinberg(quantized, 4)
-    dithered_img_3= FloydSteinberg(quantized, 6)
-    dithered_img_4= FloydSteinberg(quantized, 8)
-
-    fig.add_subplot(2, 4, 2)
-    plt.imshow(image)
-    plt.title("Image")
-    fig.add_subplot(2, 4, 3)
-    plt.imshow(quantized)
-    title = "Quantized image (q=" + str(q) +  ")"
+    quantized_img= quantize(image, q)
+    title = "Quantization (q=" + str(q) +  ")"
+    fig.add_subplot(1, 5, i)
     plt.title(title)
-    fig.add_subplot(2, 4, 5)
-    plt.imshow(dithered_img_1)
-    plt.title("Dithered image (q=2)")
-    fig.add_subplot(2, 4, 6)
-    plt.imshow(dithered_img_2)
-    plt.title("Dithered image (q=4)")
-    fig.add_subplot(2, 4, 7)
-    plt.imshow(dithered_img_3)
-    plt.title("Dithered image (q=6)")
-    fig.add_subplot(2, 4, 8)
-    plt.title("Dithered image (q=8)")
-    plt.imshow(dithered_img_4)
+    plt.imshow(quantized_img)
+    i += 1
+
+plt.show()
+plt.clf()
+
+
+"""
+
+APPLY FLOYD-STEINBERG DITHERING
+
+"""
+
+
+fig = plt.figure(figsize=(12,12))
+fig.add_subplot(2, 4, 1)
+plt.imshow(image)
+plt.title("Image")
+
+print()
+print("Dithering")
+
+i = 5
+for q in (2,4,6,8):
+    print('q =', q)
+    dithered_img= FloydSteinberg(image, q)
+    title = "Dithering (q=" + str(q) +  ")"
+    fig.add_subplot(2, 4, i)
+    plt.title(title)
+    plt.imshow(dithered_img)
+    i += 1
     
 
-
-    plt.show()
-    plt.clf()
+plt.show()
+plt.clf()
 
 
 
