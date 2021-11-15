@@ -18,10 +18,10 @@ IMAGE_DIR_PATH = os.path.join(ROOT_DIR, "colortransfer")
 
 
 def read_images(src, tgt):
-    src_img = cv2.imread(os.path.join(IMAGE_DIR_PATH, src))
+    src_img = cv2.imread(os.path.join(IMAGE_DIR_PATH, src), cv2.IMREAD_GRAYSCALE)
     src_img = cv2.cvtColor(src_img, cv2.COLOR_BGR2RGB)
 
-    tgt_img = cv2.imread(os.path.join(IMAGE_DIR_PATH, tgt))
+    tgt_img = cv2.imread(os.path.join(IMAGE_DIR_PATH, tgt), cv2.IMREAD_GRAYSCALE)
     tgt_img = cv2.cvtColor(tgt_img, cv2.COLOR_BGR2RGB)
 
     src_img = src_img.astype(np.float32)
@@ -33,7 +33,6 @@ def transfer(src, tgt):
     src_img, tgt_img = read_images(src, tgt)
     result = colorTransfer(src_img, tgt_img)
     result = result.astype(np.uint8)
-    #result /=255
     """ plt.imshow(result)
     plt.title("result")
     plt.show() """

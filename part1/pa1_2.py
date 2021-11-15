@@ -3,7 +3,8 @@ import numpy as np
 
 def FloydSteinberg(image, q):
     """
-    Floyd-Steinberg function to dither the image into a palette with q colours per channel.
+    Floyd-Steinberg function to dither the image
+    into a palette with q colours per channel.
 
     """
 
@@ -12,7 +13,7 @@ def FloydSteinberg(image, q):
 
     for ir in range(image.shape[0]):
         for ic in range(image.shape[1]):
-            # NB need to copy here for RGB arrays otherwise err will be (0,0,0)!
+            # copy the old value of the pixel
             old_val = arr[ir, ic].copy()
             #print(old_val)
             new_val = find_quantized_value(old_val, q)
@@ -35,9 +36,6 @@ def FloydSteinberg(image, q):
     return Image.fromarray(carr)
 
 def find_quantized_value(old_val, q):
-    """
-    Get the "closest" colour to old_val in the range [0,1] per channel divided
-    into q values.
-
-    """
+    # Get the "closest" colour to old_val in the
+    # range [0,1] per channel divided into q values
     return np.round(old_val * (q-1)) / (q-1)
